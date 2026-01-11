@@ -4,6 +4,7 @@ import { useAuth } from '../context/RigelAuth';
 import { GlassCard, GlassButton, GlassInput } from './ui/GlassComponents';
 import { Wallet, Shield, Plus, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PremiumFeature } from './PremiumFeature';
 
 interface UserWallet {
     id: string;
@@ -84,10 +85,12 @@ export const WalletManager: React.FC = () => {
                         onChange={(e) => setNewAddress(e.target.value)}
                         className="flex-1"
                     />
-                    <GlassButton type="submit" disabled={loading} glow>
-                        <Plus size={20} />
-                        Vincular
-                    </GlassButton>
+                    <PremiumFeature>
+                        <GlassButton type="submit" disabled={loading} glow>
+                            <Plus size={20} />
+                            Vincular
+                        </GlassButton>
+                    </PremiumFeature>
                 </form>
             </GlassCard>
 

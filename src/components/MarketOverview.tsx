@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { useAuth } from '../context/RigelAuth';
 import { GlassCard } from './ui/GlassComponents';
 import { motion } from 'framer-motion';
-import { TrendingUp, Users, Globe } from 'lucide-react';
+import { TrendingUp, Users, Globe, Zap } from 'lucide-react';
+import { PremiumFeature } from './PremiumFeature';
 
 interface MarketData {
     country: string;
@@ -16,6 +18,7 @@ interface MarketData {
 }
 
 export const MarketOverview: React.FC = () => {
+    const { isTrial } = useAuth();
     const [data, setData] = useState<MarketData[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -52,7 +55,10 @@ export const MarketOverview: React.FC = () => {
                             <TrendingUp size={24} />
                         </div>
                         <div>
-                            <p className="text-gray-400 text-xs uppercase tracking-widest">Revenue Proyectado</p>
+                            <p className="text-gray-400 text-xs uppercase tracking-widest flex items-center gap-1">
+                                Revenue Proyectado
+                                {isTrial && <Zap size={10} className="text-yellow-500" />}
+                            </p>
                             <p className="text-2xl font-bold font-outfit text-glow">${totalRevenue.toLocaleString()}</p>
                         </div>
                     </div>
@@ -72,34 +78,36 @@ export const MarketOverview: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <GlassCard className="lg:col-span-2">
-                    <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                        <Globe size={20} className="text-[#00E5FF]" />
-                        Distribución por Región
-                    </h3>
-                    <div className="space-y-4">
-                        {data.map((item, idx) => (
-                            <motion.div
-                                key={item.country}
-                                initial={{ width: 0 }}
-                                animate={{ width: '100%' }}
-                                transition={{ delay: idx * 0.1 }}
-                                className="space-y-2"
-                            >
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-white">{item.country}</span>
-                                    <span className="text-gray-400">${item.projected_monthly_revenue_usd}</span>
-                                </div>
-                                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-gradient-to-r from-[#00E5FF] to-cyan-600"
-                                        style={{ width: `${(item.projected_monthly_revenue_usd / totalRevenue) * 100}%` }}
-                                    ></div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </GlassCard>
+                <PremiumFeature>
+                    <GlassCard className="lg:col-span-2">
+                        <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                            <Globe size={20} className="text-[#00E5FF]" />
+                            Distribución por Región (Live)
+                        </h3>
+                        <div className="space-y-4">
+                            {data.map((item, idx) => (
+                                <motion.div
+                                    key={item.country}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: '100%' }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    className="space-y-2"
+                                >
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-white">{item.country}</span>
+                                        <span className="text-gray-400">${item.projected_monthly_revenue_usd}</span>
+                                    </div>
+                                    <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                                        <div
+                                            className="h-full bg-gradient-to-r from-[#00E5FF] to-cyan-600"
+                                            style={{ width: `${(item.projected_monthly_revenue_usd / totalRevenue) * 100}%` }}
+                                        ></div>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </GlassCard>
+                </PremiumFeature>
 
                 <GlassCard>
                     <h3 className="text-lg font-semibold mb-6">Métodos de Pago</h3>
