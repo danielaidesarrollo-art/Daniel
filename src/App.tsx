@@ -1,144 +1,135 @@
-import { useState } from 'react';
-import { useAuth } from './context/RigelAuth.tsx';
-import { AuthScreen } from './components/AuthScreen.tsx';
-import { MarketOverview } from './components/MarketOverview.tsx';
-import { WalletManager } from './components/WalletManager.tsx';
-import { GemsAlarms } from './components/GemsAlarms.tsx';
-import { GlassCard } from './components/ui/GlassComponents.tsx';
-import { supabase } from './lib/supabaseClient';
-import { LayoutDashboard, Wallet, BarChart3, LogOut, Sparkles, Zap } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import './App.css';
+import { useState, useEffect } from 'react'
+import './App.css'
+import VoiceMic from './components/VoiceMic'
+import SentinelHistory from './components/SentinelHistory'
+import { SynthesisService } from './services/SynthesisService'
+import { DanielVoiceService } from './services/DanielVoiceService'
+import { SentinelService } from './services/SentinelService'
+import type { MacroEvent } from './services/SentinelService'
+import { Wallet, Fuel, ShieldCheck, Activity, Eye, Play } from 'lucide-react'
 
 function App() {
-  const { user, loading, isTrial } = useAuth();
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'market' | 'wallets' | 'gems'>('dashboard');
+  const [isListening, setIsListening] = useState(false);
+  const [lastTranscript, setLastTranscript] = useState('');
+  const [balance] = useState(18759);
+  const [gasExpenses] = useState("Registrados con éxito");
+  const [isSentinelActive] = useState(true);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0B0E14] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#00E5FF]/20 border-t-[#00E5FF] rounded-full animate-spin shadow-[0_0_20px_rgba(0,229,255,0.2)]"></div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    // Initialize Daniel's special voice clone
+    DanielVoiceService.configureVoice();
+  }, []);
 
-  if (!user) {
-    return <AuthScreen />;
-  }
+  const handleTranscript = (transcript: string) => {
+    setLastTranscript(transcript);
 
-  const menuItems = [
-    { id: 'dashboard', label: 'Resumen', icon: LayoutDashboard },
-    { id: 'market', label: 'Mercado (Admin)', icon: BarChart3 },
-    { id: 'wallets', label: 'Wallets ZK', icon: Wallet },
-    { id: 'gems', label: 'Gems Alarms', icon: Sparkles },
-  ];
+    // Logic to respond to balance/gas queries
+    const text = transcript.toLowerCase();
+    if (text.includes('estado') || text.includes('saldo') || text.includes('dinero') || text.includes('gas')) {
+      SynthesisService.confirmStatus(balance, gasExpenses);
+    }
+  };
+
+  const simulateHighPriorityEvent = () => {
+    const event: MacroEvent = {
+      id: Date.now().toString(),
+      description: "Alerta de Inflación en EE.UU. supera expectativas (9.1%)",
+      category: 'Inflation',
+      impact: 12.5,
+      timestamp: Date.now()
+    };
+    SentinelService.analyzeEvent(event);
+    // Force re-render of history - in a real app would use a store or state management
+    window.location.reload();
+  };
 
   return (
-    <div className="min-h-screen bg-[#0B0E14] text-white flex">
-      {/* Sidebar Desktop */}
-      <aside className="hidden md:flex flex-col w-64 border-r border-white/5 bg-white/[0.02] backdrop-blur-xl p-6">
-        <div className="mb-10 flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#00E5FF] rounded-lg shadow-[0_0_15px_rgba(0,229,255,0.4)]"></div>
-          <span className="font-outfit font-bold text-xl tracking-tight text-glow">RIGEL</span>
-        </div>
-
-        <nav className="flex-1 space-y-2">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id as any)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === item.id
-                ? 'bg-[#00E5FF]/10 text-[#00E5FF] border border-[#00E5FF]/20'
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
-                }`}
-            >
-              <item.icon size={20} />
-              <span className="font-medium text-sm">{item.label}</span>
-              {item.id === 'gems' && isTrial && (
-                <span className="ml-auto w-2 h-2 rounded-full bg-[#00E5FF] animate-pulse"></span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="mt-auto pt-6 border-t border-white/5">
-          <button
-            onClick={() => supabase.auth.signOut()}
-            className="w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-red-400 transition-all"
-          >
-            <LogOut size={20} />
-            <span className="font-medium text-sm">Cerrar Sesión</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
-        <header className="sticky top-0 z-10 bg-[#0B0E14]/80 backdrop-blur-md border-b border-white/5 p-4 md:p-6 flex justify-between items-center">
-          <div className="md:hidden flex items-center gap-3">
-            <div className="w-6 h-6 bg-[#00E5FF] rounded shadow-[0_0_10px_rgba(0,229,255,0.4)]"></div>
-            <span className="font-outfit font-bold text-lg">RIGEL</span>
-          </div>
-
-          <h2 className="hidden md:block text-xl font-bold font-outfit uppercase tracking-wider text-white/90">
-            {menuItems.find(i => i.id === activeTab)?.label}
-          </h2>
-
-          <div className="flex items-center gap-4">
-            {isTrial && (
-              <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-yellow-500/10 border border-yellow-500/20 rounded-full">
-                <Zap size={14} className="text-yellow-500" />
-                <span className="text-[10px] font-bold text-yellow-500 uppercase tracking-tighter">Modo Simulación Activo</span>
-              </div>
-            )}
-            <div className="text-right hidden sm:block">
-              <p className="text-xs text-gray-500 uppercase font-bold tracking-widest leading-none mb-1">User</p>
-              <p className="text-sm font-medium text-white/80">{user.email?.split('@')[0]}</p>
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4">
+      <div className={`glass-card max-w-4xl w-full transition-all duration-700 ${isListening ? 'border-emerald-500/30' : 'border-white/10'}`}>
+        <header className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isListening ? 'bg-emerald-500/20 text-emerald-500' : 'bg-blue-500/20 text-blue-500'}`}>
+              <ShieldCheck size={24} />
             </div>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00E5FF]/20 to-purple-500/20 border border-white/10 flex items-center justify-center">
-              <span className="text-xs font-bold text-[#00E5FF]">{user.email?.[0].toUpperCase()}</span>
+            <h1 className="text-2xl font-bold tracking-tight">Daniel <span className="text-slate-500 font-normal">Core</span></h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={simulateHighPriorityEvent}
+              className="stitch-button-primary text-xs font-bold uppercase"
+            >
+              <Play size={14} /> SIMULAR MACRO
+            </button>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">
+              <div className={`listening-indicator ${isSentinelActive ? 'animate-pulse' : 'opacity-50'}`}></div>
+              <span className="text-xs font-medium text-slate-400 uppercase tracking-widest">Sentinela {isSentinelActive ? 'Activo' : 'Standby'}</span>
             </div>
           </div>
         </header>
 
-        <div className="p-4 md:p-8 max-w-7xl mx-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              {activeTab === 'dashboard' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <GlassCard className="relative overflow-hidden group">
-                    <div className="relative z-10">
-                      <h3 className="text-gray-400 text-xs uppercase tracking-widest mb-2 font-bold">Estado del Mercado</h3>
-                      <p className="text-3xl font-bold text-[#00E5FF] text-glow">OPERATIVO</p>
-                      <p className="text-[10px] text-gray-500 mt-4">Actualizado hace unos segundos</p>
-                    </div>
-                    <div className="absolute -right-4 -bottom-4 text-[#00E5FF]/5 transition-transform group-hover:scale-110">
-                      <BarChart3 size={120} />
-                    </div>
-                  </GlassCard>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400">
+                  <Wallet size={24} />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs text-slate-500">Balance Total</p>
+                  <p className="text-xl font-semibold">$ {balance.toLocaleString('es-CO')} COP</p>
+                </div>
+              </div>
 
-                  <GlassCard>
-                    <h3 className="text-gray-400 text-xs uppercase tracking-widest mb-2 font-bold">Nivel de Acceso</h3>
-                    <p className="text-3xl font-bold text-white uppercase">{isTrial ? 'Trial (Simulación)' : 'Pro (Ejecución)'}</p>
-                  </GlassCard>
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400">
+                  <Fuel size={24} />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs text-slate-500">Gastos de Gas</p>
+                  <p className="text-xl font-semibold text-emerald-400">Verificados</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-black/20 border border-white/5 min-h-[120px] flex flex-col items-center justify-center text-center">
+              {isListening ? (
+                <p className="text-emerald-400 animate-pulse font-medium">Escuchando órdenes de Daniel...</p>
+              ) : lastTranscript ? (
+                <p className="text-slate-300 italic">"{lastTranscript}"</p>
+              ) : (
+                <div className="space-y-2">
+                  <p className="text-slate-500">Protocolo Sentinela operando en segundo plano</p>
+                  <p className="text-[10px] text-slate-600 uppercase tracking-[0.2em]">Ready for Macro Signals</p>
                 </div>
               )}
+            </div>
+          </div>
 
-              {activeTab === 'market' && <MarketOverview />}
-              {activeTab === 'wallets' && <WalletManager />}
-              {activeTab === 'gems' && <GemsAlarms />}
-            </motion.div>
-          </AnimatePresence>
+          <div className="lg:col-span-1 border-l border-white/5 pl-6">
+            <SentinelHistory />
+          </div>
         </div>
-      </main>
+
+        <footer className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between text-slate-500 text-xs">
+          <div className="flex items-center gap-2">
+            <Activity size={14} className="text-emerald-500" />
+            <span>Sentinela v1.0.1 • Época 15</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1"><Eye size={12} /> Beefy Sync</span>
+            <span>v2.0.0-Stitch</span>
+          </div>
+        </footer>
+      </div>
+
+      <VoiceMic
+        onTranscript={handleTranscript}
+        isListening={isListening}
+        setIsListening={setIsListening}
+      />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
+
