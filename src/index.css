@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --stitch-blue: #0A0F1E;
+  --slate-gray: #1E293B;
+  --emerald-glow: #10B981;
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --glass-bg: rgba(30, 41, 59, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  color: var(--text-primary);
+  background-color: var(--stitch-blue);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.05), transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(14, 165, 233, 0.05), transparent 50%);
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  width: 100%;
+}
+
+#root {
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Stitch Button Base */
+.stitch-button {
+  @apply flex items-center justify-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 font-medium tracking-tight;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.stitch-button-primary {
+  @apply stitch-button bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20 active:scale-95;
+}
+
+.stitch-button-secondary {
+  @apply stitch-button bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 active:scale-95;
+}
+
+.emerald-glow {
+  box-shadow: 0 0 20px var(--emerald-glow), 0 0 40px var(--emerald-glow);
+  animation: pulse-emerald 2s infinite;
+}
+
+@keyframes pulse-emerald {
+  0% {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.8), 0 0 50px rgba(16, 185, 129, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  }
+}
+
+.listening-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: var(--emerald-glow);
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  filter: drop-shadow(0 0 5px var(--emerald-glow));
+}
+
