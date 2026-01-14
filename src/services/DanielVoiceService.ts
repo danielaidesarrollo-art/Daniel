@@ -11,7 +11,8 @@ export class DanielVoiceService {
      */
     static async configureVoice() {
         try {
-            console.log("Configurando voz de Daniel (GPT-SoVITS)...");
+            console.log(" Daniel Context: Iniciando configuración de voz (GPT-SoVITS)...");
+            console.log(" Daniel Context: Verificando conexión con el servidor en http://127.0.0.1:9880");
 
             const sovitsPath = "C:/Users/johan/Downloads/GPT-SoVITS-v3lora-20250228/GPT-SoVITS-v3lora-20250228/SoVITS_weights_v2/Daniel_Felipe_e8_s720.pth";
             const gptPath = "C:/Users/johan/Downloads/GPT-SoVITS-v3lora-20250228/GPT-SoVITS-v3lora-20250228/GPT_weights_v2/Daniel_Felipe-e15.ckpt";
@@ -19,16 +20,23 @@ export class DanielVoiceService {
             // Load SoVITS Weights
             const sovitsParams = new URLSearchParams({ weights_path: sovitsPath });
             const sRes = await fetch(`${API_BASE}/set_sovits_weights?${sovitsParams.toString()}`);
-            if (!sRes.ok) throw new Error(`Failed to set SoVITS weights: ${sRes.status}`);
+            if (!sRes.ok) {
+                console.error(` Daniel Context: Error cargando SoVITS weights. Código: ${sRes.status}. Asegúrese de que el servidor está encendido.`);
+                return;
+            }
 
             // Load GPT Weights
             const gptParams = new URLSearchParams({ weights_path: gptPath });
             const gRes = await fetch(`${API_BASE}/set_gpt_weights?${gptParams.toString()}`);
-            if (!gRes.ok) throw new Error(`Failed to set GPT weights: ${gRes.status}`);
+            if (!gRes.ok) {
+                console.error(` Daniel Context: Error cargando GPT weights. Código: ${gRes.status}`);
+                return;
+            }
 
-            console.log("Pesos de Daniel (e15) cargados con éxito.");
+            console.log(" Daniel Context: ✅ Voz de Daniel (e15) configuratada con éxito.");
         } catch (error) {
-            console.error("Error configurando la voz de Daniel:", error);
+            console.error(" Daniel Context: ❌ ERROR FATAL configurando la voz de Daniel:", error);
+            console.error(" Sugerencia: Ejecute el script 'go-api.bat' en su carpeta de GPT-SoVITS.");
         }
     }
 

@@ -37,7 +37,7 @@ const SentinelHistory: React.FC = () => {
                                 )}
                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${entry.recommendation.priority === 'High' ? 'bg-rose-500/10 text-rose-500' : 'bg-emerald-500/10 text-emerald-500'
                                     }`}>
-                                    {entry.event.category}
+                                    {entry.recommendation.priority === 'High' ? 'Prioridad Alta' : entry.event.category}
                                 </span>
                             </div>
                             <span className="text-[10px] text-slate-500">

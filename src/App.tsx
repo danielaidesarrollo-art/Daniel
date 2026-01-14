@@ -14,6 +14,7 @@ function App() {
   const [balance] = useState(18759);
   const [gasExpenses] = useState("Registrados con éxito");
   const [isSentinelActive] = useState(true);
+  const [walletAddress, setWalletAddress] = useState('0x71C7656EC7ab88b098defB751B7401B5f6d8976F');
 
   useEffect(() => {
     // Initialize Daniel's special voice clone
@@ -46,23 +47,46 @@ function App() {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center p-4">
       <div className={`glass-card max-w-4xl w-full transition-all duration-700 ${isListening ? 'border-emerald-500/30' : 'border-white/10'}`}>
-        <header className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isListening ? 'bg-emerald-500/20 text-emerald-500' : 'bg-blue-500/20 text-blue-500'}`}>
-              <ShieldCheck size={24} />
+        <header className="space-y-6 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isListening ? 'bg-emerald-500/20 text-emerald-500' : 'bg-blue-500/20 text-blue-500'}`}>
+                <ShieldCheck size={24} />
+              </div>
+              <h1 className="text-2xl font-bold tracking-tight">Daniel <span className="text-slate-500 font-normal">Core</span></h1>
             </div>
-            <h1 className="text-2xl font-bold tracking-tight">Daniel <span className="text-slate-500 font-normal">Core</span></h1>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={simulateHighPriorityEvent}
+                className="stitch-button-primary text-xs font-bold uppercase"
+              >
+                <Play size={14} /> SIMULAR MACRO
+              </button>
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                <div className={`listening-indicator ${isSentinelActive ? 'animate-pulse' : 'opacity-50'}`}></div>
+                <span className="text-xs font-medium text-slate-400 uppercase tracking-widest">Sentinela {isSentinelActive ? 'Activo' : 'En espera'}</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={simulateHighPriorityEvent}
-              className="stitch-button-primary text-xs font-bold uppercase"
-            >
-              <Play size={14} /> SIMULAR MACRO
-            </button>
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">
-              <div className={`listening-indicator ${isSentinelActive ? 'animate-pulse' : 'opacity-50'}`}></div>
-              <span className="text-xs font-medium text-slate-400 uppercase tracking-widest">Sentinela {isSentinelActive ? 'Activo' : 'Standby'}</span>
+
+          <div className="p-1 rounded-2xl bg-black/40 border border-white/5 shadow-inner">
+            <div className="flex items-center gap-3 px-4 py-3 bg-white/5 rounded-xl border border-white/10 focus-within:border-emerald-500/50 focus-within:ring-1 focus-within:ring-emerald-500/50 transition-all duration-300">
+              <div className="text-slate-500">
+                <Wallet size={18} />
+              </div>
+              <div className="flex-1 flex flex-col">
+                <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mb-1">Dirección de Wallet</label>
+                <input
+                  type="text"
+                  value={walletAddress}
+                  onChange={(e) => setWalletAddress(e.target.value)}
+                  placeholder="Ingrese dirección de wallet..."
+                  className="bg-transparent border-none outline-none text-sm font-mono text-emerald-400 placeholder:text-slate-600 w-full"
+                />
+              </div>
+              <div className="px-2 py-1 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 uppercase">
+                Sincronización Lista
+              </div>
             </div>
           </div>
         </header>
@@ -99,7 +123,7 @@ function App() {
               ) : (
                 <div className="space-y-2">
                   <p className="text-slate-500">Protocolo Sentinela operando en segundo plano</p>
-                  <p className="text-[10px] text-slate-600 uppercase tracking-[0.2em]">Ready for Macro Signals</p>
+                  <p className="text-[10px] text-slate-600 uppercase tracking-[0.2em]">Listo para señales macro</p>
                 </div>
               )}
             </div>
