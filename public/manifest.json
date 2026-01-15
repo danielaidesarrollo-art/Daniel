@@ -1,0 +1,56 @@
+{
+    "name": "Daniel Core",
+    "short_name": "Daniel",
+    "description": "Asistente financiero AI con reconocimiento de voz y sistema Sentinela para monitoreo de eventos macro",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#00D9FF",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "es-CO",
+    "dir": "ltr",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "finance",
+        "productivity",
+        "utilities"
+    ],
+    "screenshots": [],
+    "shortcuts": [
+        {
+            "name": "Ver Balance",
+            "short_name": "Balance",
+            "description": "Ver balance de wallet",
+            "url": "/?action=balance",
+            "icons": [
+                {
+                    "src": "/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "share_target": {
+        "action": "/",
+        "method": "GET",
+        "params": {
+            "title": "title",
+            "text": "text",
+            "url": "url"
+        }
+    }
+}

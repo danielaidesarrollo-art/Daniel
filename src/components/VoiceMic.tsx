@@ -51,9 +51,9 @@ const VoiceMic: React.FC<VoiceMicProps> = ({ onTranscript, isListening, setIsLis
     <div className="fixed bottom-8 right-8 z-50">
       <button
         onClick={toggleListening}
-        className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 border border-white/10 ${isListening
-            ? 'bg-emerald-500 emerald-glow scale-110'
-            : 'bg-white/5 hover:bg-white/10 text-slate-400'
+        className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 border ${isListening
+          ? 'flow-gradient-cyan-magenta flow-glow-mixed scale-110 border-flow-cyan/50'
+          : 'bg-white/5 hover:bg-white/10 text-slate-400 border-white/10'
           } backdrop-blur-md shadow-2xl`}
       >
         {isListening ? (
@@ -63,7 +63,7 @@ const VoiceMic: React.FC<VoiceMicProps> = ({ onTranscript, isListening, setIsLis
         )}
       </button>
       {isListening && (
-        <div className="absolute -top-12 right-0 bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 px-4 py-1 rounded-full text-emerald-400 text-sm font-medium">
+        <div className="absolute -top-12 right-0 bg-flow-cyan/10 backdrop-blur-md border border-flow-cyan/30 px-4 py-1 rounded-full text-flow-cyan text-sm font-medium flow-glow-cyan">
           Daniel escuchando...
         </div>
       )}

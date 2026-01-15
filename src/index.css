@@ -6,19 +6,25 @@
   --stitch-blue: #0A0F1E;
   --slate-gray: #1E293B;
   --emerald-glow: #10B981;
+  /* Google Flow Colors */
+  --flow-cyan: #00D9FF;
+  --flow-magenta: #E91E63;
+  --flow-purple: #9C27B0;
+  --flow-emerald: #10B981;
+  --flow-dark: #000000;
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
-  --glass-bg: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(10, 15, 30, 0.8);
+  --glass-border: rgba(0, 217, 255, 0.1);
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: dark;
   color: var(--text-primary);
-  background-color: var(--stitch-blue);
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.05), transparent 50%),
-    radial-gradient(circle at 0% 100%, rgba(14, 165, 233, 0.05), transparent 50%);
+  background-color: var(--flow-dark);
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(0, 217, 255, 0.08), transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(233, 30, 99, 0.08), transparent 50%);
   margin: 0;
   display: flex;
   place-items: center;
@@ -60,7 +66,15 @@ body {
 }
 
 .stitch-button-primary {
-  @apply stitch-button bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20 active:scale-95;
+  @apply stitch-button text-white hover:scale-105 active:scale-95;
+  background: linear-gradient(135deg, var(--flow-cyan), var(--flow-magenta));
+  border: 1px solid rgba(0, 217, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.3), 0 0 40px rgba(233, 30, 99, 0.2);
+  transition: all 0.3s ease;
+}
+
+.stitch-button-primary:hover {
+  box-shadow: 0 0 30px rgba(0, 217, 255, 0.5), 0 0 60px rgba(233, 30, 99, 0.3);
 }
 
 .stitch-button-secondary {
@@ -76,9 +90,11 @@ body {
   0% {
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
   }
+
   50% {
     box-shadow: 0 0 30px rgba(16, 185, 129, 0.8), 0 0 50px rgba(16, 185, 129, 0.4);
   }
+
   100% {
     box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
   }
@@ -88,9 +104,43 @@ body {
   display: inline-block;
   width: 10px;
   height: 10px;
-  background-color: var(--emerald-glow);
+  background-color: var(--flow-cyan);
   border-radius: 50%;
   margin-right: 0.5rem;
-  filter: drop-shadow(0 0 5px var(--emerald-glow));
+  filter: drop-shadow(0 0 5px var(--flow-cyan));
 }
 
+/* Google Flow Gradient Utilities */
+.flow-gradient-cyan-magenta {
+  background: linear-gradient(135deg, var(--flow-cyan), var(--flow-magenta));
+  background-size: 200% 200%;
+}
+
+.flow-gradient-cyan-emerald {
+  background: linear-gradient(135deg, var(--flow-cyan), var(--flow-emerald));
+  background-size: 200% 200%;
+}
+
+.flow-glow-cyan {
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.5), 0 0 40px rgba(0, 217, 255, 0.3);
+}
+
+.flow-glow-magenta {
+  box-shadow: 0 0 20px rgba(233, 30, 99, 0.5), 0 0 40px rgba(233, 30, 99, 0.3);
+}
+
+.flow-glow-mixed {
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.4), 0 0 40px rgba(233, 30, 99, 0.3), 0 0 60px rgba(156, 39, 176, 0.2);
+}
+
+/* Animated gradient background */
+.flow-gradient-animated {
+  background: linear-gradient(135deg, var(--flow-cyan), var(--flow-purple), var(--flow-magenta));
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Neural logo styles */
+.neural-logo .node-circle {
+  transform-origin: center;
+}
